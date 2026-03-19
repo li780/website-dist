@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>独行之人导航站</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+
+:root {
+  --bg-primary: #f5f6f8;
+  --bg-card: #ffffff;
+  --bg-sidebar: #1a1d23;
+  --bg-sidebar-hover: #2a2d35;
+  --bg-sidebar-active: #2d6cdf;
+  --text-primary: #1a1d23;
+  --text-secondary: #5a6072;
+  --text-muted: #8b90a0;
+  --text-sidebar: #c8ccd8;
+  --text-sidebar-active: #ffffff;
+  --accent: #2d6cdf;
+  --accent-light: #e8f0fe;
+  --accent-hover: #1e5bc6;
+  --border: #e5e7ec;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --transition: 0.2s ease;
+  --sidebar-width: 220px;
+  --header-height: 60px;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0f1117;
+  --bg-card: #1a1d25;
+  --bg-sidebar: #0d0f14;
+  --bg-sidebar-hover: #1a1d25;
+  --text-primary: #e4e6ec;
+  --text-secondary: #9a9eb0;
+  --text-muted: #6b7088;
+  --text-sidebar: #8890a8;
+  --border: #2a2d38;
+  --accent-light: #1a2744;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.25);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.35);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: var(--sidebar-width);
+  background: var(--bg-sidebar);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.sidebar-logo {
+  padding: 20px 18px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+.sidebar-logo .logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #2d6cdf 0%, #6b4ce6 100%);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 2px 10px rgba(45,108,223,0.3);
+}
+
+.sidebar-logo .logo-text {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-nav { padding: 12px 10px; flex: 1; }
+
+.sidebar-nav .nav-group {
+  margin-bottom: 6px;
+}
+
+.sidebar-nav .nav-group-title {
+  padding: 8px 10px 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sidebar-nav .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-sidebar);
+  font-size: 13.5px;
+  font-weight: 400;
+  transition: all var(--transition);
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-nav .nav-item:hover {
+  background: var(--bg-sidebar-hover);
+  color: #fff;
+}
+
+.sidebar-nav .nav-item.active {
+  background: var(--bg-sidebar-active);
+  color: var(--text-sidebar-active);
+  font-weight: 500;
+}
+
+.sidebar-nav .nav-item .nav-icon {
+  width: 20px; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.sidebar-nav .nav-item .nav-count {
+  margin-left: auto;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.sidebar-nav .nav-item.active .nav-count {
+  background: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.9);
+}
+
+/* ========== MAIN ========== */
+.main-content {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== HEADER ========== */
+.header {
+  height: var(--header-height);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text-primary);
+  padding: 4px;
+}
+
+.search-box {
+  flex: 1;
+  max-width: 560px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+}
+
+.search-engine-btn {
+  height: 38px;
+  padding: 0 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-right: none;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  display: flex; align-items: center; gap: 6px;
+  cursor: pointer;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background var(--transition);
+}
+.search-engine-btn:hover { background: var(--border); }
+
+.search-engine-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  z-index: 200;
+  display: none;
+  min-width: 160px;
+}
+.search-engine-dropdown.show { display: block; }
+
+.search-engine-dropdown .engine-option {
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex; align-items: center; gap: 8px;
+  transition: background var(--transition);
+}
+.search-engine-dropdown .engine-option:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+.search-engine-dropdown .engine-option.active {
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.search-input {
+  flex: 1;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-left: none;
+  border-right: none;
+  padding: 0 14px;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  outline: none;
+  font-family: inherit;
+}
+.search-input::placeholder { color: var(--text-muted); }
+.search-input:focus { border-color: var(--accent); }
+
+.search-btn {
+  height: 38px;
+  padding: 0 18px;
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  transition: background var(--transition);
+  white-space: nowrap;
+}
+.search-btn:hover { background: var(--accent-hover); }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.header-action-btn {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  color: var(--text-secondary);
+  transition: all var(--transition);
+}
+.header-action-btn:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ========== CONTENT AREA ========== */
+.content-area {
+  flex: 1;
+  padding: 24px;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--accent);
+}
+
+.category-header .cat-icon {
+  font-size: 20px;
+}
+
+.category-header h2 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.category-header .cat-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-primary);
+  padding: 2px 10px;
+  border-radius: 10px;
+}
+
+/* ========== SITE GRID ========== */
+.sites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 36px;
+}
+
+.site-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.site-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.site-card .site-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.site-card .site-icon img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.site-card .site-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.site-card .site-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.site-card .site-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.site-card .fav-btn {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity var(--transition);
+  padding: 4px;
+}
+.site-card:hover .fav-btn { opacity: 0.6; }
+.site-card .fav-btn:hover { opacity: 1; }
+.site-card .fav-btn.is-fav { opacity: 1; }
+
+/* ========== SECTION for ALL categories view ========== */
+.all-categories-section {
+  margin-bottom: 32px;
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  padding: 20px 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+.footer a:hover {
+  color: var(--accent);
+}
+
+/* ========== OVERLAY ========== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 99;
+}
+
+/* ========== EMPTY STATE ========== */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; }
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+/* ========== MOBILE ========== */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 260px;
+  }
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-overlay.show { display: block; }
+  .main-content { margin-left: 0; }
+  .mobile-menu-btn { display: flex; }
+  .header { padding: 0 16px; }
+  .content-area { padding: 16px; }
+  .sites-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .search-box { max-width: none; }
+}
+
+@media (max-width: 480px) {
+  .sites-grid {
+    grid-template-columns: 1fr;
+  }
+  .site-card { padding: 12px; }
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.site-card {
+  animation: fadeIn 0.3s ease both;
+}
+
+/* ========== SEARCH FILTER HIGHLIGHT ========== */
+.search-highlight {
+  background: #fff3cd;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+[data-theme="dark"] .search-highlight {
+  background: #553a00;
+}
+</style>
+</head>
+<body>
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🧭</div>
+    <span class="logo-text">独行之人导航</span>
+  </div>
+  <nav class="sidebar-nav" id="sidebarNav">
+    <!-- Populated by JS -->
+  </nav>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Main -->
+<div class="main-content">
+  <header class="header">
+    <button class="mobile-menu-btn" id="menuBtn">☰</button>
+    <div class="search-box">
+      <button class="search-engine-btn" id="engineBtn">
+        <span id="engineIcon">🔍</span>
+        <span id="engineName">站内搜索</span>
+        <span style="font-size:10px;">▼</span>
+      </button>
+      <div class="search-engine-dropdown" id="engineDropdown"></div>
+      <input class="search-input" id="searchInput" type="text" placeholder="搜索网站名称或描述..." autocomplete="off">
+      <button class="search-btn" id="searchBtn">搜索</button>
+    </div>
+    <div class="header-actions">
+      <button class="header-action-btn" id="themeToggle" title="切换主题">🌙</button>
+    </div>
+  </header>
+
+  <div class="content-area" id="contentArea">
+    <!-- Populated by JS -->
+  </div>
+
+  <footer class="footer">
+    <span>© 2024 独行之人导航站 · </span>
+    <a href="admin.html" title="后台管理">管理入口</a>
+  </footer>
+</div>
+
+<script>
+// ===================== DATA =====================
+const DEFAULT_DATA = {
+  categories: [
+    { id: 'fav', name: '我的收藏', icon: '⭐', order: -1 },
+    { id: 'ai', name: 'AI工具', icon: '🤖', order: 0 },
+    { id: 'dev', name: '开发工具', icon: '💻', order: 1 },
+    { id: 'design', name: '设计资源', icon: '🎨', order: 2 },
+    { id: 'media', name: '影音娱乐', icon: '🎬', order: 3 },
+    { id: 'study', name: '学习教育', icon: '📚', order: 4 },
+    { id: 'tool', name: '在线工具', icon: '🔧', order: 5 },
+    { id: 'news', name: '资讯阅读', icon: '📰', order: 6 },
+    { id: 'social', name: '社交平台', icon: '💬', order: 7 },
+    { id: 'cloud', name: '云服务', icon: '☁️', order: 8 },
+    { id: 'game', name: '游戏天地', icon: '🎮', order: 9 },
+    { id: 'life', name: '生活服务', icon: '🏠', order: 10 },
+    { id: 'search', name: '搜索引擎', icon: '🔍', order: 11 },
+    { id: 'image', name: '图片素材', icon: '🖼️', order: 12 },
+    { id: 'video', name: '视频平台', icon: '📹', order: 13 },
+    { id: 'font', name: '字体资源', icon: '🔤', order: 14 },
+    { id: 'color', name: '配色方案', icon: '🎯', order: 15 }
+  ],
+  sites: [
+    // AI工具
+    { id: 's1', name: 'ChatGPT', url: 'https://chat.openai.com', desc: 'OpenAI 智能对话助手', icon: '🤖', category: 'ai' },
+    { id: 's2', name: 'Claude', url: 'https://claude.ai', desc: 'Anthropic AI 智能助手', icon: '🧠', category: 'ai' },
+    { id: 's3', name: '文心一言', url: 'https://yiyan.baidu.com', desc: '百度大语言模型', icon: '💬', category: 'ai' },
+    { id: 's4', name: '通义千问', url: 'https://tongyi.aliyun.com', desc: '阿里巴巴 AI 助手', icon: '🌟', category: 'ai' },
+    { id: 's5', name: 'Midjourney', url: 'https://www.midjourney.com', desc: 'AI 绘画生成工具', icon: '🎨', category: 'ai' },
+    { id: 's6', name: 'Stable Diffusion', url: 'https://stability.ai', desc: '开源 AI 图像生成', icon: '🖼️', category: 'ai' },
+    { id: 's7', name: 'Perplexity', url: 'https://www.perplexity.ai', desc: 'AI 搜索引擎', icon: '🔍', category: 'ai' },
+    { id: 's8', name: 'Poe', url: 'https://poe.com', desc: '多模型 AI 聚合平台', icon: '⚡', category: 'ai' },
+    { id: 's9', name: 'Kimi', url: 'https://kimi.moonshot.cn', desc: '月之暗面长文本 AI 助手', icon: '🌙', category: 'ai' },
+    { id: 's10', name: '豆包', url: 'https://www.doubao.com', desc: '字节跳动 AI 助手', icon: '🫘', category: 'ai' },
+    { id: 's11', name: 'Gemini', url: 'https://gemini.google.com', desc: 'Google AI 助手', icon: '💎', category: 'ai' },
+    { id: 's12', name: 'Cursor', url: 'https://cursor.sh', desc: 'AI 编程 IDE', icon: '🖱️', category: 'ai' },
+
+    // 开发工具
+    { id: 'd1', name: 'GitHub', url: 'https://github.com', desc: '全球最大代码托管平台', icon: '🐙', category: 'dev' },
+    { id: 'd2', name: 'Gitee', url: 'https://gitee.com', desc: '国内代码托管平台', icon: '📦', category: 'dev' },
+    { id: 'd3', name: 'VS Code', url: 'https://code.visualstudio.com', desc: '强大的代码编辑器', icon: '📝', category: 'dev' },
+    { id: 'd4', name: 'Stack Overflow', url: 'https://stackoverflow.com', desc: '程序员问答社区', icon: '📋', category: 'dev' },
+    { id: 'd5', name: 'MDN Web Docs', url: 'https://developer.mozilla.org', desc: 'Web 开发文档', icon: '📖', category: 'dev' },
+    { id: 'd6', name: 'CodePen', url: 'https://codepen.io', desc: '在线代码编辑和展示', icon: '✏️', category: 'dev' },
+    { id: 'd7', name: 'Can I Use', url: 'https://caniuse.com', desc: '浏览器兼容性查询', icon: '🔎', category: 'dev' },
+    { id: 'd8', name: 'npm', url: 'https://www.npmjs.com', desc: 'Node.js 包管理器', icon: '📦', category: 'dev' },
+    { id: 'd9', name: 'LeetCode', url: 'https://leetcode.cn', desc: '算法练习刷题平台', icon: '🧩', category: 'dev' },
+    { id: 'd10', name: 'Vercel', url: 'https://vercel.com', desc: '前端部署与托管', icon: '▲', category: 'dev' },
+
+    // 设计资源
+    { id: 'de1', name: 'Dribbble', url: 'https://dribbble.com', desc: '设计师交流平台', icon: '🏀', category: 'design' },
+    { id: 'de2', name: 'Behance', url: 'https://www.behance.net', desc: 'Adobe 设计作品展示', icon: '🅱️', category: 'design' },
+    { id: 'de3', name: '站酷', url: 'https://www.zcool.com.cn', desc: '设计师互动学习平台', icon: '🎭', category: 'design' },
+    { id: 'de4', name: 'Figma', url: 'https://www.figma.com', desc: '在线协作设计工具', icon: '🖌️', category: 'design' },
+    { id: 'de5', name: '花瓣网', url: 'https://huaban.com', desc: '设计灵感与素材', icon: '🌸', category: 'design' },
+    { id: 'de6', name: 'Canva', url: 'https://www.canva.cn', desc: '在线设计平台', icon: '🎨', category: 'design' },
+    { id: 'de7', name: '即时设计', url: 'https://js.design', desc: '国产在线 UI 设计工具', icon: '✨', category: 'design' },
+    { id: 'de8', name: 'UI8', url: 'https://ui8.net', desc: 'UI 设计素材市场', icon: '🎁', category: 'design' },
+
+    // 影音娱乐
+    { id: 'm1', name: '哔哩哔哩', url: 'https://www.bilibili.com', desc: '视频弹幕网站', icon: '📺', category: 'media' },
+    { id: 'm2', name: '网易云音乐', url: 'https://music.163.com', desc: '在线音乐平台', icon: '🎵', category: 'media' },
+    { id: 'm3', name: 'YouTube', url: 'https://www.youtube.com', desc: '全球最大视频平台', icon: '▶️', category: 'media' },
+    { id: 'm4', name: 'Spotify', url: 'https://www.spotify.com', desc: '全球音乐流媒体', icon: '🎧', category: 'media' },
+    { id: 'm5', name: '爱奇艺', url: 'https://www.iqiyi.com', desc: '在线视频平台', icon: '🎬', category: 'media' },
+    { id: 'm6', name: '抖音', url: 'https://www.douyin.com', desc: '短视频平台', icon: '🎶', category: 'media' },
+
+    // 学习教育
+    { id: 'st1', name: '中国知网', url: 'https://www.cnki.net', desc: '学术文献检索', icon: '📚', category: 'study' },
+    { id: 'st2', name: '知乎', url: 'https://www.zhihu.com', desc: '高质量问答社区', icon: '💡', category: 'study' },
+    { id: 'st3', name: 'Coursera', url: 'https://www.coursera.org', desc: '在线学习平台', icon: '🎓', category: 'study' },
+    { id: 'st4', name: '慕课网', url: 'https://www.imooc.com', desc: 'IT 技能学习平台', icon: '💻', category: 'study' },
+    { id: 'st5', name: 'B站大学', url: 'https://www.bilibili.com/learning', desc: 'B站学习频道', icon: '📹', category: 'study' },
+    { id: 'st6', name: 'Wikipedia', url: 'https://zh.wikipedia.org', desc: '自由的百科全书', icon: '📖', category: 'study' },
+
+    // 在线工具
+    { id: 't1', name: 'TinyPNG', url: 'https://tinypng.com', desc: '图片压缩工具', icon: '🐼', category: 'tool' },
+    { id: 't2', name: 'Remove.bg', url: 'https://www.remove.bg', desc: 'AI 自动抠图', icon: '✂️', category: 'tool' },
+    { id: 't3', name: '草料二维码', url: 'https://cli.im', desc: '二维码生成器', icon: '📱', category: 'tool' },
+    { id: 't4', name: 'DeepL', url: 'https://www.deepl.com', desc: '高质量翻译工具', icon: '🌐', category: 'tool' },
+    { id: 't5', name: 'ProcessOn', url: 'https://www.processon.com', desc: '在线画流程图', icon: '📊', category: 'tool' },
+    { id: 't6', name: 'Carbon', url: 'https://carbon.now.sh', desc: '代码片段美化', icon: '💎', category: 'tool' },
+    { id: 't7', name: 'JSON Editor', url: 'https://jsoneditoronline.org', desc: 'JSON 在线编辑器', icon: '📝', category: 'tool' },
+
+    // 资讯阅读
+    { id: 'n1', name: '今日头条', url: 'https://www.toutiao.com', desc: '个性化资讯推荐', icon: '📰', category: 'news' },
+    { id: 'n2', name: '少数派', url: 'https://sspai.com', desc: '高效数字生活', icon: '📱', category: 'news' },
+    { id: 'n3', name: '36氪', url: 'https://36kr.com', desc: '科技商业媒体', icon: '🚀', category: 'news' },
+    { id: 'n4', name: 'V2EX', url: 'https://www.v2ex.com', desc: '技术创意社区', icon: '💬', category: 'news' },
+    { id: 'n5', name: 'Hacker News', url: 'https://news.ycombinator.com', desc: '黑客新闻', icon: '🔶', category: 'news' },
+
+    // 社交平台
+    { id: 'so1', name: '微信', url: 'https://weixin.qq.com', desc: '即时通讯工具', icon: '💚', category: 'social' },
+    { id: 'so2', name: '微博', url: 'https://weibo.com', desc: '社交媒体平台', icon: '🔴', category: 'social' },
+    { id: 'so3', name: 'Twitter/X', url: 'https://x.com', desc: '全球社交网络', icon: '🐦', category: 'social' },
+    { id: 'so4', name: '小红书', url: 'https://www.xiaohongshu.com', desc: '生活分享社区', icon: '📕', category: 'social' },
+    { id: 'so5', name: 'Discord', url: 'https://discord.com', desc: '社区语音聊天', icon: '🎮', category: 'social' },
+
+    // 云服务
+    { id: 'c1', name: '阿里云', url: 'https://www.aliyun.com', desc: '云计算服务', icon: '☁️', category: 'cloud' },
+    { id: 'c2', name: '腾讯云', url: 'https://cloud.tencent.com', desc: '云计算服务', icon: '🌤️', category: 'cloud' },
+    { id: 'c3', name: '又拍云', url: 'https://www.upyun.com', desc: 'CDN 和云存储', icon: '⬆️', category: 'cloud' },
+    { id: 'c4', name: 'Cloudflare', url: 'https://www.cloudflare.com', desc: 'CDN 安全加速', icon: '🔶', category: 'cloud' },
+    { id: 'c5', name: 'Netlify', url: 'https://www.netlify.com', desc: '静态站点部署', icon: '🌐', category: 'cloud' },
+
+    // 游戏天地
+    { id: 'g1', name: 'Steam', url: 'https://store.steampowered.com', desc: '游戏数字商城', icon: '🎮', category: 'game' },
+    { id: 'g2', name: 'TapTap', url: 'https://www.taptap.cn', desc: '手游社区', icon: '📱', category: 'game' },
+    { id: 'g3', name: 'Epic Games', url: 'https://www.epicgames.com', desc: '游戏商城', icon: '🎯', category: 'game' },
+    { id: 'g4', name: '游民星空', url: 'https://www.gamersky.com', desc: '游戏资讯', icon: '⭐', category: 'game' },
+
+    // 生活服务
+    { id: 'l1', name: '淘宝', url: 'https://www.taobao.com', desc: '综合购物平台', icon: '🛒', category: 'life' },
+    { id: 'l2', name: '京东', url: 'https://www.jd.com', desc: '综合电商平台', icon: '🏬', category: 'life' },
+    { id: 'l3', name: '美团', url: 'https://www.meituan.com', desc: '生活服务平台', icon: '🍕', category: 'life' },
+    { id: 'l4', name: '高德地图', url: 'https://www.amap.com', desc: '地图导航', icon: '🗺️', category: 'life' },
+    { id: 'l5', name: '大众点评', url: 'https://www.dianping.com', desc: '美食生活信息', icon: '⭐', category: 'life' },
+
+    // 搜索引擎
+    { id: 'se1', name: 'Google', url: 'https://www.google.com', desc: '全球搜索引擎', icon: '🔍', category: 'search' },
+    { id: 'se2', name: '百度', url: 'https://www.baidu.com', desc: '中文搜索引擎', icon: '🔎', category: 'search' },
+    { id: 'se3', name: 'Bing', url: 'https://www.bing.com', desc: '微软搜索引擎', icon: '🌐', category: 'search' },
+    { id: 'se4', name: 'DuckDuckGo', url: 'https://duckduckgo.com', desc: '隐私搜索引擎', icon: '🦆', category: 'search' },
+
+    // 图片素材
+    { id: 'i1', name: 'Unsplash', url: 'https://unsplash.com', desc: '免费高清图片', icon: '📷', category: 'image' },
+    { id: 'i2', name: 'Pexels', url: 'https://www.pexels.com', desc: '免费图片视频素材', icon: '🖼️', category: 'image' },
+    { id: 'i3', name: 'Pixabay', url: 'https://pixabay.com', desc: '免费图片插画', icon: '🎭', category: 'image' },
+    { id: 'i4', name: 'iconfont', url: 'https://www.iconfont.cn', desc: '阿里巴巴图标库', icon: '🎯', category: 'image' },
+    { id: 'i5', name: 'Flaticon', url: 'https://www.flaticon.com', desc: '矢量图标库', icon: '📐', category: 'image' },
+
+    // 视频平台
+    { id: 'v1', name: '哔哩哔哩', url: 'https://www.bilibili.com', desc: '视频弹幕网站', icon: '📺', category: 'video' },
+    { id: 'v2', name: 'YouTube', url: 'https://www.youtube.com', desc: '全球视频平台', icon: '▶️', category: 'video' },
+    { id: 'v3', name: '优酷', url: 'https://www.youku.com', desc: '在线视频平台', icon: '🎬', category: 'video' },
+    { id: 'v4', name: '西瓜视频', url: 'https://www.ixigua.com', desc: '长视频平台', icon: '🍉', category: 'video' },
+
+    // 字体资源
+    { id: 'f1', name: '100font', url: 'https://www.100font.com', desc: '免费商用字体', icon: '🔤', category: 'font' },
+    { id: 'f2', name: 'Google Fonts', url: 'https://fonts.google.com', desc: '谷歌免费字体', icon: '🅶', category: 'font' },
+    { id: 'f3', name: '字体天下', url: 'https://www.fonts.net.cn', desc: '中英文字体下载', icon: '📝', category: 'font' },
+    { id: 'f4', name: '猫啃网', url: 'https://www.maoken.com', desc: '免费商用字体', icon: '🐱', category: 'font' },
+
+    // 配色方案
+    { id: 'co1', name: 'Coolors', url: 'https://coolors.co', desc: '配色方案生成器', icon: '🎨', category: 'color' },
+    { id: 'co2', name: 'Color Hunt', url: 'https://www.colorhunt.co', desc: '色卡灵感', icon: '🎯', category: 'color' },
+    { id: 'co3', name: '中国色', url: 'https://zhongguose.com', desc: '中国传统颜色', icon: '🏮', category: 'color' },
+    { id: 'co4', name: 'Adobe Color', url: 'https://color.adobe.com', desc: '在线调色工具', icon: '🌈', category: 'color' }
+  ],
+  favorites: [],
+  searchEngines: [
+    { id: 'local', name: '站内搜索', icon: '🔍', urlTemplate: '' },
+    { id: 'google', name: 'Google', icon: '🇬', urlTemplate: 'https://www.google.com/search?q={q}' },
+    { id: 'baidu', name: '百度', icon: '🅱️', urlTemplate: 'https://www.baidu.com/s?wd={q}' },
+    { id: 'bing', name: 'Bing', icon: '🌐', urlTemplate: 'https://www.bing.com/search?q={q}' },
+    { id: 'zhihu', name: '知乎', icon: '💡', urlTemplate: 'https://www.zhihu.com/search?type=content&q={q}' },
+    { id: 'bilibili', name: '哔哩哔哩', icon: '📺', urlTemplate: 'https://search.bilibili.com/all?keyword={q}' },
+    { id: 'github', name: 'GitHub', icon: '🐙', urlTemplate: 'https://github.com/search?q={q}' },
+    { id: 'douyin', name: '抖音', icon: '🎵', urlTemplate: 'https://www.douyin.com/search/{q}' },
+    { id: 'duckduckgo', name: 'DuckDuckGo', icon: '🦆', urlTemplate: 'https://duckduckgo.com/?q={q}' }
+  ]
+};
+
+// ===================== STATE =====================
+let state = {
+  data: null,
+  currentCategory: 'all',
+  currentEngine: 'local',
+  searchQuery: '',
+  theme: 'light'
+};
+
+// ===================== STORAGE =====================
+function loadData() {
+  try {
+    const saved = localStorage.getItem('nav_data_v4');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Merge with defaults to ensure new fields exist
+      state.data = {
+        categories: (parsed.categories && parsed.categories.length > 0) ? parsed.categories : DEFAULT_DATA.categories,
+        sites: (parsed.sites && parsed.sites.length > 0) ? parsed.sites : DEFAULT_DATA.sites,
+        favorites: parsed.favorites || [],
+        searchEngines: (parsed.searchEngines && parsed.searchEngines.length > 0) ? parsed.searchEngines : DEFAULT_DATA.searchEngines
+      };
+    } else {
+      state.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    }
+  } catch (e) {
+    console.error('Load data error:', e);
+    state.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+
+  // nav_favorites_v4 作为独立收藏存储（优先级高于data内的favorites）
+  try {
+    const favs = localStorage.getItem('nav_favorites_v4');
+    if (favs) state.data.favorites = JSON.parse(favs);
+  } catch(e) {}
+
+  // Load theme
+  state.theme = localStorage.getItem('nav_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', state.theme);
+  // updateThemeIcon 在init()中DOM就绪后调用，此处不调用
+}
+
+function saveData() {
+  try {
+    localStorage.setItem('nav_data_v4', JSON.stringify(state.data));
+  } catch(e) { console.error('Save error:', e); }
+}
+
+function saveFavorites() {
+  try {
+    localStorage.setItem('nav_favorites_v4', JSON.stringify(state.data.favorites));
+    // 同步到nav_data_v4，确保admin读取时favorites数据一致
+    saveData();
+  } catch(e) {}
+}
+
+// ===================== RENDER =====================
+function renderSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  const cats = state.data.categories
+    .filter(c => c.id !== 'fav')
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  const favCount = state.data.favorites.length;
+  const allCount = state.data.sites.length;
+
+  let html = '';
+  // All & Favorites
+  html += `<div class="nav-group">`;
+  html += `<div class="nav-item ${state.currentCategory === 'all' ? 'active' : ''}" data-cat="all">
+    <span class="nav-icon">🏠</span><span>全部站点</span>
+    <span class="nav-count">${allCount}</span>
+  </div>`;
+  if (favCount > 0) {
+    html += `<div class="nav-item ${state.currentCategory === 'fav' ? 'active' : ''}" data-cat="fav">
+      <span class="nav-icon">⭐</span><span>我的收藏</span>
+      <span class="nav-count">${favCount}</span>
+    </div>`;
+  }
+  html += `</div>`;
+
+  // Category groups
+  html += `<div class="nav-group"><div class="nav-group-title">分类导航</div>`;
+  cats.forEach(cat => {
+    const count = state.data.sites.filter(s => s.category === cat.id).length;
+    html += `<div class="nav-item ${state.currentCategory === cat.id ? 'active' : ''}" data-cat="${cat.id}">
+      <span class="nav-icon">${cat.icon}</span><span>${cat.name}</span>
+      <span class="nav-count">${count}</span>
+    </div>`;
+  });
+  html += `</div>`;
+
+  nav.innerHTML = html;
+
+  // Bind events
+  nav.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      state.currentCategory = item.dataset.cat;
+      state.searchQuery = '';
+      document.getElementById('searchInput').value = '';
+      renderSidebar();
+      renderContent();
+      closeMobileMenu();
+    });
+  });
+}
+
+function renderContent() {
+  const area = document.getElementById('contentArea');
+  const query = state.searchQuery.toLowerCase().trim();
+  const catId = state.currentCategory;
+
+  if (catId === 'all' && !query) {
+    // Show all categories with their sites
+    renderAllCategories(area);
+  } else if (catId === 'fav') {
+    renderFavorites(area, query);
+  } else {
+    renderSingleCategory(area, catId, query);
+  }
+}
+
+function renderAllCategories(area) {
+  const cats = state.data.categories
+    .filter(c => c.id !== 'fav')
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  let html = '';
+  cats.forEach(cat => {
+    const sites = state.data.sites.filter(s => s.category === cat.id);
+    if (sites.length === 0) return;
+
+    html += `<div class="all-categories-section">`;
+    html += `<div class="category-header">
+      <span class="cat-icon">${cat.icon}</span>
+      <h2>${cat.name}</h2>
+      <span class="cat-count">${sites.length} 个站点</span>
+    </div>`;
+    html += `<div class="sites-grid">`;
+    sites.forEach((site, i) => {
+      html += renderSiteCard(site, i);
+    });
+    html += `</div></div>`;
+  });
+
+  if (!html) {
+    html = `<div class="empty-state"><div class="empty-icon">📭</div><p>暂无站点，请在后台管理中添加</p></div>`;
+  }
+  area.innerHTML = html;
+  bindCardEvents();
+}
+
+function renderFavorites(area, query) {
+  const favSites = state.data.sites.filter(s => state.data.favorites.includes(s.id));
+  const filtered = query
+    ? favSites.filter(s => s.name.toLowerCase().includes(query) || (s.desc || '').toLowerCase().includes(query))
+    : favSites;
+
+  let html = `<div class="category-header">
+    <span class="cat-icon">⭐</span>
+    <h2>我的收藏</h2>
+    <span class="cat-count">${filtered.length} 个站点</span>
+  </div>`;
+
+  if (filtered.length === 0) {
+    html += `<div class="empty-state"><div class="empty-icon">⭐</div><p>还没有收藏任何站点，点击卡片右上角的星标添加收藏</p></div>`;
+  } else {
+    html += `<div class="sites-grid">`;
+    filtered.forEach((site, i) => { html += renderSiteCard(site, i); });
+    html += `</div>`;
+  }
+  area.innerHTML = html;
+  bindCardEvents();
+}
+
+function renderSingleCategory(area, catId, query) {
+  let sites;
+  if (catId === 'all') {
+    sites = state.data.sites;
+  } else {
+    sites = state.data.sites.filter(s => s.category === catId);
+  }
+
+  if (query) {
+    // 在当前分类范围内搜索，而不是全局搜索
+    sites = sites.filter(s =>
+      s.name.toLowerCase().includes(query) || (s.desc || '').toLowerCase().includes(query) || s.url.toLowerCase().includes(query)
+    );
+  }
+
+  const cat = state.data.categories.find(c => c.id === catId);
+  const catName = query ? `搜索结果` : (cat ? cat.name : '全部站点');
+  const catIcon = query ? '🔍' : (cat ? cat.icon : '🏠');
+
+  let html = `<div class="category-header">
+    <span class="cat-icon">${catIcon}</span>
+    <h2>${catName}</h2>
+    <span class="cat-count">${sites.length} 个站点</span>
+  </div>`;
+
+  if (sites.length === 0) {
+    html += `<div class="empty-state"><div class="empty-icon">🔍</div><p>${query ? '没有找到匹配的站点' : '该分类下暂无站点'}</p></div>`;
+  } else {
+    html += `<div class="sites-grid">`;
+    sites.forEach((site, i) => { html += renderSiteCard(site, i); });
+    html += `</div>`;
+  }
+  area.innerHTML = html;
+  bindCardEvents();
+}
+
+function renderSiteCard(site, index) {
+  const isFav = state.data.favorites.includes(site.id);
+  const delay = Math.min(index * 0.03, 0.5);
+  const iconContent = site.icon || site.name.charAt(0);
+  const isEmoji = /[\u{1F000}-\u{1FFFF}|\u{2600}-\u{27BF}|\u{FE00}-\u{FEFF}|\u{1F900}-\u{1F9FF}|\u{2B50}|\u{2705}|\u{274C}|\u{25B2}|\u{25B6}|\u{23F0}]/u.test(iconContent);
+
+  return `<a class="site-card" href="${site.url}" target="_blank" rel="noopener" data-id="${site.id}" style="animation-delay:${delay}s" title="${site.name} - ${site.desc}">
+    <div class="site-icon">${isEmoji ? iconContent : `<span style="font-size:16px;font-weight:700;">${site.name.charAt(0)}</span>`}</div>
+    <div class="site-info">
+      <div class="site-name">${site.name}</div>
+      <div class="site-desc">${site.desc}</div>
+    </div>
+    <button class="fav-btn ${isFav ? 'is-fav' : ''}" data-fav-id="${site.id}" title="${isFav ? '取消收藏' : '添加收藏'}">${isFav ? '⭐' : '☆'}</button>
+  </a>`;
+}
+
+function bindCardEvents() {
+  document.querySelectorAll('.fav-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const siteId = btn.dataset.favId;
+      toggleFavorite(siteId);
+    });
+  });
+}
+
+function toggleFavorite(siteId) {
+  const idx = state.data.favorites.indexOf(siteId);
+  if (idx > -1) {
+    state.data.favorites.splice(idx, 1);
+  } else {
+    state.data.favorites.push(siteId);
+  }
+  saveFavorites();
+  renderSidebar();
+  renderContent();
+}
+
+// ===================== SEARCH =====================
+function renderSearchEngines() {
+  const dropdown = document.getElementById('engineDropdown');
+  let html = '';
+  state.data.searchEngines.forEach(eng => {
+    html += `<div class="engine-option ${state.currentEngine === eng.id ? 'active' : ''}" data-engine="${eng.id}">
+      <span>${eng.icon}</span> ${eng.name}
+    </div>`;
+  });
+  dropdown.innerHTML = html;
+
+  dropdown.querySelectorAll('.engine-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      state.currentEngine = opt.dataset.engine;
+      updateEngineDisplay();
+      dropdown.classList.remove('show');
+    });
+  });
+}
+
+function updateEngineDisplay() {
+  const eng = state.data.searchEngines.find(e => e.id === state.currentEngine);
+  if (eng) {
+    document.getElementById('engineIcon').textContent = eng.icon;
+    document.getElementById('engineName').textContent = eng.name;
+  }
+  const input = document.getElementById('searchInput');
+  input.placeholder = state.currentEngine === 'local'
+    ? '搜索网站名称或描述...'
+    : `在 ${state.data.searchEngines.find(e => e.id === state.currentEngine)?.name || ''} 中搜索...`;
+}
+
+function doSearch() {
+  const query = document.getElementById('searchInput').value.trim();
+  if (!query) {
+    state.searchQuery = '';
+    renderContent();
+    return;
+  }
+
+  if (state.currentEngine === 'local') {
+    state.searchQuery = query;
+    state.currentCategory = 'all';
+    renderSidebar();
+    renderContent();
+  } else {
+    const eng = state.data.searchEngines.find(e => e.id === state.currentEngine);
+    if (eng && eng.urlTemplate) {
+      window.open(eng.urlTemplate.replace('{q}', encodeURIComponent(query)), '_blank');
+    }
+  }
+}
+
+// ===================== THEME =====================
+function toggleTheme() {
+  state.theme = state.theme === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', state.theme);
+  localStorage.setItem('nav_theme', state.theme);
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = state.theme === 'light' ? '🌙' : '☀️';
+}
+
+// ===================== MOBILE =====================
+function closeMobileMenu() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
+
+// ===================== INIT =====================
+function init() {
+  loadData();
+  renderSidebar();
+  renderContent();
+  renderSearchEngines();
+  updateEngineDisplay();
+
+  // Events
+  document.getElementById('engineBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('engineDropdown').classList.toggle('show');
+  });
+
+  document.addEventListener('click', () => {
+    document.getElementById('engineDropdown').classList.remove('show');
+  });
+
+  document.getElementById('searchBtn').addEventListener('click', doSearch);
+  document.getElementById('searchInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') doSearch();
+  });
+
+  // Live search for local
+  document.getElementById('searchInput').addEventListener('input', () => {
+    if (state.currentEngine === 'local') {
+      state.searchQuery = document.getElementById('searchInput').value.trim();
+      if (state.searchQuery) {
+        state.currentCategory = 'all';
+        renderSidebar();
+      }
+      renderContent();
+    }
+  });
+
+  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+  document.getElementById('menuBtn').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('show');
+  });
+
+  document.getElementById('sidebarOverlay').addEventListener('click', closeMobileMenu);
+}
+
+init();
+</script>
+</body>
+</html>

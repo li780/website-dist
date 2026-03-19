@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>后台管理 - 独行之人导航站</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+  --bg: #f0f2f5;
+  --bg-card: #ffffff;
+  --text: #1a1d23;
+  --text-sec: #5a6072;
+  --text-muted: #8b90a0;
+  --accent: #2d6cdf;
+  --accent-hover: #1e5bc6;
+  --accent-light: #e8f0fe;
+  --border: #e5e7ec;
+  --danger: #e5484d;
+  --danger-light: #ffe5e5;
+  --success: #30a46c;
+  --success-light: #e6f9ed;
+  --warning: #f5a623;
+  --shadow: 0 2px 8px rgba(0,0,0,0.06);
+  --radius: 10px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ========== LOGIN ========== */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1d23 0%, #2a3040 100%);
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.login-card .login-logo {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.login-card .login-logo .logo-icon {
+  width: 56px; height: 56px;
+  background: linear-gradient(135deg, #2d6cdf, #6b4ce6);
+  border-radius: 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 15px rgba(45,108,223,0.3);
+}
+
+.login-card .login-logo h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.login-card .login-logo p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-sec);
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+  background: #fafbfc;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(45,108,223,0.1);
+  background: #fff;
+}
+
+.login-btn {
+  width: 100%;
+  height: 44px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 6px;
+}
+.login-btn:hover { background: var(--accent-hover); }
+
+.login-error {
+  color: var(--danger);
+  font-size: 12px;
+  text-align: center;
+  margin-top: 12px;
+  display: none;
+}
+
+.login-back {
+  text-align: center;
+  margin-top: 18px;
+}
+.login-back a {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 13px;
+}
+.login-back a:hover { text-decoration: underline; }
+
+/* ========== ADMIN LAYOUT ========== */
+.admin-page { display: none; min-height: 100vh; }
+
+.admin-header {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.admin-header .header-left {
+  display: flex; align-items: center; gap: 12px;
+}
+
+.admin-header .header-left .logo-sm {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, #2d6cdf, #6b4ce6);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+
+.admin-header .header-left h1 {
+  font-size: 16px; font-weight: 700;
+}
+
+.admin-header .header-right {
+  display: flex; align-items: center; gap: 10px;
+}
+
+.btn {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-sec);
+  white-space: nowrap;
+}
+.btn:hover { background: var(--bg); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.btn-primary:hover { background: var(--accent-hover); }
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+.btn-danger:hover { background: #d13438; }
+
+.btn-sm {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+/* ========== TABS ========== */
+.admin-tabs {
+  display: flex;
+  gap: 0;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+
+.admin-tab {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  background: none;
+  border-top: none; border-left: none; border-right: none;
+  font-family: inherit;
+}
+.admin-tab:hover { color: var(--text); }
+.admin-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ========== CONTENT ========== */
+.admin-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ========== TABLE ========== */
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.table-search {
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  min-width: 220px;
+  background: var(--bg-card);
+}
+.table-search:focus { border-color: var(--accent); }
+
+.table-container {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  font-weight: 600;
+  color: var(--text-sec);
+  background: #fafbfc;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+td { color: var(--text); }
+
+tr:last-child td { border-bottom: none; }
+
+tr:hover td { background: #fafbfc; }
+
+.table-icon {
+  font-size: 18px;
+  display: inline-block;
+  width: 28px;
+  text-align: center;
+}
+
+.table-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.badge-blue { background: var(--accent-light); color: var(--accent); }
+.badge-green { background: var(--success-light); color: var(--success); }
+
+/* ========== MODAL ========== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.modal-overlay.show { display: flex; }
+
+.modal {
+  background: var(--bg-card);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.modal-close {
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { background: var(--bg); }
+
+.modal-body { padding: 20px 24px; }
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.form-group.full { grid-column: 1 / -1; }
+
+select.form-input {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%235a6072' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+/* ========== STATS ========== */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.stat-card .stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.stat-card .stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ========== DATA MGMT ========== */
+.data-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.data-section h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.data-section p {
+  font-size: 13px;
+  color: var(--text-sec);
+  margin-bottom: 14px;
+}
+
+.data-section .btn-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: #1a1d23;
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 9999;
+  transition: transform 0.3s ease;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 768px) {
+  .admin-content { padding: 16px; }
+  .table-toolbar { flex-direction: column; align-items: stretch; }
+  .table-search { min-width: auto; }
+  .form-row { grid-template-columns: 1fr; }
+  th, td { padding: 10px 12px; font-size: 12px; }
+  .admin-tabs { overflow-x: auto; padding: 0 16px; }
+  .admin-tab { padding: 12px 14px; font-size: 13px; white-space: nowrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== LOGIN PAGE ========== -->
+<div class="login-page" id="loginPage">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon">⚙️</div>
+      <h1>后台管理系统</h1>
+      <p>独行之人导航站</p>
+    </div>
+    <div class="form-group">
+      <label>管理员账号</label>
+      <input class="form-input" type="text" id="loginUser" placeholder="请输入账号" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>管理员密码</label>
+      <input class="form-input" type="password" id="loginPass" placeholder="请输入密码" autocomplete="off">
+    </div>
+    <button class="login-btn" id="loginBtn">登 录</button>
+    <div class="login-error" id="loginError">账号或密码错误</div>
+    <div class="login-back">
+      <a href="index.html">← 返回导航站首页</a>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ADMIN PAGE ========== -->
+<div class="admin-page" id="adminPage">
+  <header class="admin-header">
+    <div class="header-left">
+      <div class="logo-sm">⚙️</div>
+      <h1>后台管理</h1>
+    </div>
+    <div class="header-right">
+      <a href="index.html" class="btn">🏠 返回首页</a>
+      <button class="btn" id="logoutBtn">退出登录</button>
+    </div>
+  </header>
+
+  <div class="admin-tabs" id="adminTabs">
+    <button class="admin-tab active" data-panel="sites">网站管理</button>
+    <button class="admin-tab" data-panel="categories">分类管理</button>
+    <button class="admin-tab" data-panel="engines">搜索引擎</button>
+    <button class="admin-tab" data-panel="data">数据管理</button>
+  </div>
+
+  <div class="admin-content">
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow"></div>
+
+    <!-- Sites Panel -->
+    <div class="panel active" id="panel-sites">
+      <div class="table-toolbar">
+        <input class="table-search" id="siteSearch" placeholder="搜索网站名称..." type="text">
+        <button class="btn btn-primary" id="addSiteBtn">＋ 添加网站</button>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>图标</th><th>名称</th><th>分类</th><th>网址</th><th>描述</th><th>操作</th></tr>
+          </thead>
+          <tbody id="sitesTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Categories Panel -->
+    <div class="panel" id="panel-categories">
+      <div class="table-toolbar">
+        <span style="font-size:13px;color:var(--text-sec);">拖拽行调整排序（开发中）</span>
+        <button class="btn btn-primary" id="addCatBtn">＋ 添加分类</button>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>图标</th><th>名称</th><th>ID</th><th>排序</th><th>站点数</th><th>操作</th></tr>
+          </thead>
+          <tbody id="catsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Search Engines Panel -->
+    <div class="panel" id="panel-engines">
+      <div class="table-toolbar">
+        <span style="font-size:13px;color:var(--text-sec);">管理导航站的搜索引擎列表</span>
+        <button class="btn btn-primary" id="addEngBtn">＋ 添加搜索引擎</button>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>图标</th><th>名称</th><th>ID</th><th>URL模板</th><th>操作</th></tr>
+          </thead>
+          <tbody id="enginesTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Data Panel -->
+    <div class="panel" id="panel-data">
+      <div class="data-section">
+        <h4>📤 导出数据</h4>
+        <p>将所有网站、分类、收藏等数据导出为 JSON 文件</p>
+        <div class="btn-group">
+          <button class="btn btn-primary" id="exportBtn">导出数据</button>
+        </div>
+      </div>
+      <div class="data-section">
+        <h4>📥 导入数据</h4>
+        <p>从 JSON 文件导入数据（将覆盖现有数据）</p>
+        <div class="btn-group">
+          <button class="btn btn-primary" id="importBtn">选择文件导入</button>
+          <input type="file" id="importFile" accept=".json" style="display:none">
+        </div>
+      </div>
+      <div class="data-section">
+        <h4>🔄 重置数据</h4>
+        <p>恢复到默认数据，将清除所有自定义内容</p>
+        <div class="btn-group">
+          <button class="btn btn-danger" id="resetBtn">重置为默认</button>
+        </div>
+      </div>
+      <div class="data-section">
+        <h4>🔐 修改密码</h4>
+        <p>修改后台管理登录密码</p>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <input class="form-input" type="password" id="newPassInput" placeholder="输入新密码" style="max-width:200px;height:36px;">
+          <input class="form-input" type="password" id="confirmPassInput" placeholder="确认新密码" style="max-width:200px;height:36px;">
+          <button class="btn btn-primary" id="changePassBtn">修改密码</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODALS ========== -->
+<!-- Site Modal -->
+<div class="modal-overlay" id="siteModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="siteModalTitle">添加网站</h3>
+      <button class="modal-close" onclick="closeSiteModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="siteEditId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>网站名称 *</label>
+          <input class="form-input" id="siteName" placeholder="例：百度">
+        </div>
+        <div class="form-group">
+          <label>分类 *</label>
+          <select class="form-input" id="siteCategory"></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>网址 *</label>
+        <input class="form-input" id="siteUrl" placeholder="https://www.example.com">
+      </div>
+      <div class="form-group">
+        <label>描述</label>
+        <input class="form-input" id="siteDesc" placeholder="简短描述">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>图标 (emoji)</label>
+          <input class="form-input" id="siteIcon" placeholder="🔍">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeSiteModal()">取 消</button>
+      <button class="btn btn-primary" id="saveSiteBtn">保 存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Category Modal -->
+<div class="modal-overlay" id="catModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="catModalTitle">添加分类</h3>
+      <button class="modal-close" onclick="closeCatModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="catEditId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>分类名称 *</label>
+          <input class="form-input" id="catName" placeholder="例：AI工具">
+        </div>
+        <div class="form-group">
+          <label>分类ID *</label>
+          <input class="form-input" id="catId" placeholder="例：ai">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>图标 (emoji)</label>
+          <input class="form-input" id="catIcon" placeholder="🤖">
+        </div>
+        <div class="form-group">
+          <label>排序</label>
+          <input class="form-input" type="number" id="catOrder" placeholder="0">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeCatModal()">取 消</button>
+      <button class="btn btn-primary" id="saveCatBtn">保 存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Engine Modal -->
+<div class="modal-overlay" id="engModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="engModalTitle">添加搜索引擎</h3>
+      <button class="modal-close" onclick="closeEngModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="engEditId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>名称 *</label>
+          <input class="form-input" id="engName" placeholder="例：Google">
+        </div>
+        <div class="form-group">
+          <label>ID *</label>
+          <input class="form-input" id="engId" placeholder="例：google">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>图标 (emoji)</label>
+        <input class="form-input" id="engIcon" placeholder="🔍">
+      </div>
+      <div class="form-group">
+        <label>URL模板（用 {q} 代替搜索词）</label>
+        <input class="form-input" id="engUrl" placeholder="https://www.google.com/search?q={q}">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeEngModal()">取 消</button>
+      <button class="btn btn-primary" id="saveEngBtn">保 存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== AUTH =====================
+const DEFAULT_CREDENTIALS = { user: 'admin', pass: 'admin123' };
+
+function getCredentials() {
+  try {
+    const saved = localStorage.getItem('nav_admin_credentials');
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return DEFAULT_CREDENTIALS;
+}
+
+function setCredentials(user, pass) {
+  localStorage.setItem('nav_admin_credentials', JSON.stringify({ user, pass }));
+}
+
+function isLoggedIn() {
+  return sessionStorage.getItem('nav_admin_logged') === 'true';
+}
+
+function login(user, pass) {
+  const creds = getCredentials();
+  if (user === creds.user && pass === creds.pass) {
+    sessionStorage.setItem('nav_admin_logged', 'true');
+    return true;
+  }
+  return false;
+}
+
+function logout() {
+  sessionStorage.removeItem('nav_admin_logged');
+  showLogin();
+}
+
+function showLogin() {
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('adminPage').style.display = 'none';
+}
+
+function showAdmin() {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('adminPage').style.display = 'block';
+  loadAdminData();
+}
+
+// ===================== DATA =====================
+// Share data with main nav via localStorage
+const DEFAULT_DATA = {
+  categories: [
+    { id: 'fav', name: '我的收藏', icon: '⭐', order: -1 },
+    { id: 'ai', name: 'AI工具', icon: '🤖', order: 0 },
+    { id: 'dev', name: '开发工具', icon: '💻', order: 1 },
+    { id: 'design', name: '设计资源', icon: '🎨', order: 2 },
+    { id: 'media', name: '影音娱乐', icon: '🎬', order: 3 },
+    { id: 'study', name: '学习教育', icon: '📚', order: 4 },
+    { id: 'tool', name: '在线工具', icon: '🔧', order: 5 },
+    { id: 'news', name: '资讯阅读', icon: '📰', order: 6 },
+    { id: 'social', name: '社交平台', icon: '💬', order: 7 },
+    { id: 'cloud', name: '云服务', icon: '☁️', order: 8 },
+    { id: 'game', name: '游戏天地', icon: '🎮', order: 9 },
+    { id: 'life', name: '生活服务', icon: '🏠', order: 10 },
+    { id: 'search', name: '搜索引擎', icon: '🔍', order: 11 },
+    { id: 'image', name: '图片素材', icon: '🖼️', order: 12 },
+    { id: 'video', name: '视频平台', icon: '📹', order: 13 },
+    { id: 'font', name: '字体资源', icon: '🔤', order: 14 },
+    { id: 'color', name: '配色方案', icon: '🎯', order: 15 }
+  ],
+  sites: [
+    // AI 工具
+    { id: 'ai1', name: 'ChatGPT', url: 'https://chat.openai.com', desc: 'OpenAI 对话 AI', icon: '🤖', category: 'ai' },
+    { id: 'ai2', name: 'Claude', url: 'https://claude.ai', desc: 'Anthropic AI 助手', icon: '🧠', category: 'ai' },
+    { id: 'ai3', name: 'Gemini', url: 'https://gemini.google.com', desc: 'Google AI 助手', icon: '✨', category: 'ai' },
+    { id: 'ai4', name: 'Midjourney', url: 'https://www.midjourney.com', desc: 'AI 图像生成', icon: '🎨', category: 'ai' },
+    { id: 'ai5', name: '文心一言', url: 'https://yiyan.baidu.com', desc: '百度 AI 对话', icon: '🌊', category: 'ai' },
+    { id: 'ai6', name: '通义千问', url: 'https://qianwen.aliyun.com', desc: '阿里 AI 助手', icon: '🔮', category: 'ai' },
+    { id: 'ai7', name: 'Stable Diffusion', url: 'https://stability.ai', desc: 'AI 图像生成模型', icon: '🖼️', category: 'ai' },
+    { id: 'ai8', name: 'Perplexity', url: 'https://www.perplexity.ai', desc: 'AI 搜索引擎', icon: '🔭', category: 'ai' },
+    // 开发工具
+    { id: 'dev1', name: 'GitHub', url: 'https://github.com', desc: '代码托管平台', icon: '🐙', category: 'dev' },
+    { id: 'dev2', name: 'Stack Overflow', url: 'https://stackoverflow.com', desc: '开发者问答社区', icon: '📚', category: 'dev' },
+    { id: 'dev3', name: 'MDN Web Docs', url: 'https://developer.mozilla.org', desc: 'Web 技术文档', icon: '📖', category: 'dev' },
+    { id: 'dev4', name: 'CodePen', url: 'https://codepen.io', desc: '前端代码在线编辑', icon: '✏️', category: 'dev' },
+    { id: 'dev5', name: 'npm', url: 'https://www.npmjs.com', desc: 'Node.js 包管理器', icon: '📦', category: 'dev' },
+    { id: 'dev6', name: 'Can I Use', url: 'https://caniuse.com', desc: '浏览器兼容性查询', icon: '🔍', category: 'dev' },
+    { id: 'dev7', name: 'Regex101', url: 'https://regex101.com', desc: '正则表达式测试', icon: '🔧', category: 'dev' },
+    { id: 'dev8', name: 'DevDocs', url: 'https://devdocs.io', desc: '开发文档聚合', icon: '📋', category: 'dev' },
+    // 设计资源
+    { id: 'de1', name: 'Dribbble', url: 'https://dribbble.com', desc: '设计师作品展示', icon: '🏀', category: 'design' },
+    { id: 'de2', name: 'Behance', url: 'https://www.behance.net', desc: 'Adobe 设计社区', icon: '🎭', category: 'design' },
+    { id: 'de3', name: '站酷', url: 'https://www.zcool.com.cn', desc: '设计师互动学习平台', icon: '🎭', category: 'design' },
+    { id: 'de4', name: 'Figma', url: 'https://www.figma.com', desc: '在线协作设计工具', icon: '🖌️', category: 'design' },
+    { id: 'de5', name: '花瓣网', url: 'https://huaban.com', desc: '设计灵感与素材', icon: '🌸', category: 'design' },
+    { id: 'de6', name: 'Canva', url: 'https://www.canva.cn', desc: '在线设计平台', icon: '🎨', category: 'design' },
+    { id: 'de7', name: '即时设计', url: 'https://js.design', desc: '国产在线 UI 设计工具', icon: '✨', category: 'design' },
+    { id: 'de8', name: 'UI8', url: 'https://ui8.net', desc: 'UI 设计素材市场', icon: '🎁', category: 'design' },
+    // 影音娱乐
+    { id: 'm1', name: '哔哩哔哩', url: 'https://www.bilibili.com', desc: '视频弹幕网站', icon: '📺', category: 'media' },
+    { id: 'm2', name: '网易云音乐', url: 'https://music.163.com', desc: '在线音乐平台', icon: '🎵', category: 'media' },
+    { id: 'm3', name: 'YouTube', url: 'https://www.youtube.com', desc: '全球最大视频平台', icon: '▶️', category: 'media' },
+    { id: 'm4', name: 'Spotify', url: 'https://www.spotify.com', desc: '全球音乐流媒体', icon: '🎧', category: 'media' },
+    { id: 'm5', name: '爱奇艺', url: 'https://www.iqiyi.com', desc: '在线视频平台', icon: '🎬', category: 'media' },
+    { id: 'm6', name: '抖音', url: 'https://www.douyin.com', desc: '短视频平台', icon: '🎶', category: 'media' },
+    // 学习教育
+    { id: 'st1', name: '中国知网', url: 'https://www.cnki.net', desc: '学术文献检索', icon: '📚', category: 'study' },
+    { id: 'st2', name: '知乎', url: 'https://www.zhihu.com', desc: '高质量问答社区', icon: '💡', category: 'study' },
+    { id: 'st3', name: 'Coursera', url: 'https://www.coursera.org', desc: '在线学习平台', icon: '🎓', category: 'study' },
+    { id: 'st4', name: '慕课网', url: 'https://www.imooc.com', desc: 'IT 技能学习平台', icon: '💻', category: 'study' },
+    { id: 'st5', name: 'B站大学', url: 'https://www.bilibili.com/learning', desc: 'B站学习频道', icon: '📹', category: 'study' },
+    { id: 'st6', name: 'Wikipedia', url: 'https://zh.wikipedia.org', desc: '自由的百科全书', icon: '📖', category: 'study' },
+    // 在线工具
+    { id: 't1', name: 'TinyPNG', url: 'https://tinypng.com', desc: '图片压缩工具', icon: '🐼', category: 'tool' },
+    { id: 't2', name: 'Remove.bg', url: 'https://www.remove.bg', desc: 'AI 自动抠图', icon: '✂️', category: 'tool' },
+    { id: 't3', name: '草料二维码', url: 'https://cli.im', desc: '二维码生成器', icon: '📱', category: 'tool' },
+    { id: 't4', name: 'DeepL', url: 'https://www.deepl.com', desc: '高质量翻译工具', icon: '🌐', category: 'tool' },
+    { id: 't5', name: 'ProcessOn', url: 'https://www.processon.com', desc: '在线画流程图', icon: '📊', category: 'tool' },
+    { id: 't6', name: 'Carbon', url: 'https://carbon.now.sh', desc: '代码片段美化', icon: '💎', category: 'tool' },
+    { id: 't7', name: 'JSON Editor', url: 'https://jsoneditoronline.org', desc: 'JSON 在线编辑器', icon: '📝', category: 'tool' },
+    // 资讯阅读
+    { id: 'n1', name: '今日头条', url: 'https://www.toutiao.com', desc: '个性化资讯推荐', icon: '📰', category: 'news' },
+    { id: 'n2', name: '少数派', url: 'https://sspai.com', desc: '高效数字生活', icon: '📱', category: 'news' },
+    { id: 'n3', name: '36氪', url: 'https://36kr.com', desc: '科技商业媒体', icon: '🚀', category: 'news' },
+    { id: 'n4', name: 'V2EX', url: 'https://www.v2ex.com', desc: '技术创意社区', icon: '💬', category: 'news' },
+    { id: 'n5', name: 'Hacker News', url: 'https://news.ycombinator.com', desc: '黑客新闻', icon: '🔶', category: 'news' },
+    // 社交平台
+    { id: 'so1', name: '微信', url: 'https://weixin.qq.com', desc: '即时通讯工具', icon: '💚', category: 'social' },
+    { id: 'so2', name: '微博', url: 'https://weibo.com', desc: '社交媒体平台', icon: '🔴', category: 'social' },
+    { id: 'so3', name: 'Twitter/X', url: 'https://x.com', desc: '全球社交网络', icon: '🐦', category: 'social' },
+    { id: 'so4', name: '小红书', url: 'https://www.xiaohongshu.com', desc: '生活分享社区', icon: '📕', category: 'social' },
+    { id: 'so5', name: 'Discord', url: 'https://discord.com', desc: '社区语音聊天', icon: '🎮', category: 'social' },
+    // 云服务
+    { id: 'c1', name: '阿里云', url: 'https://www.aliyun.com', desc: '云计算服务', icon: '☁️', category: 'cloud' },
+    { id: 'c2', name: '腾讯云', url: 'https://cloud.tencent.com', desc: '云计算服务', icon: '🌤️', category: 'cloud' },
+    { id: 'c3', name: '又拍云', url: 'https://www.upyun.com', desc: 'CDN 和云存储', icon: '⬆️', category: 'cloud' },
+    { id: 'c4', name: 'Cloudflare', url: 'https://www.cloudflare.com', desc: 'CDN 安全加速', icon: '🔶', category: 'cloud' },
+    { id: 'c5', name: 'Netlify', url: 'https://www.netlify.com', desc: '静态站点部署', icon: '🌐', category: 'cloud' },
+    // 游戏天地
+    { id: 'g1', name: 'Steam', url: 'https://store.steampowered.com', desc: '游戏数字商城', icon: '🎮', category: 'game' },
+    { id: 'g2', name: 'TapTap', url: 'https://www.taptap.cn', desc: '手游社区', icon: '📱', category: 'game' },
+    { id: 'g3', name: 'Epic Games', url: 'https://www.epicgames.com', desc: '游戏商城', icon: '🎯', category: 'game' },
+    { id: 'g4', name: '游民星空', url: 'https://www.gamersky.com', desc: '游戏资讯', icon: '⭐', category: 'game' },
+    // 生活服务
+    { id: 'l1', name: '淘宝', url: 'https://www.taobao.com', desc: '综合购物平台', icon: '🛒', category: 'life' },
+    { id: 'l2', name: '京东', url: 'https://www.jd.com', desc: '综合电商平台', icon: '🏬', category: 'life' },
+    { id: 'l3', name: '美团', url: 'https://www.meituan.com', desc: '生活服务平台', icon: '🍕', category: 'life' },
+    { id: 'l4', name: '高德地图', url: 'https://www.amap.com', desc: '地图导航', icon: '🗺️', category: 'life' },
+    { id: 'l5', name: '大众点评', url: 'https://www.dianping.com', desc: '美食生活信息', icon: '⭐', category: 'life' },
+    // 搜索引擎
+    { id: 'se1', name: 'Google', url: 'https://www.google.com', desc: '全球搜索引擎', icon: '🔍', category: 'search' },
+    { id: 'se2', name: '百度', url: 'https://www.baidu.com', desc: '中文搜索引擎', icon: '🔎', category: 'search' },
+    { id: 'se3', name: 'Bing', url: 'https://www.bing.com', desc: '微软搜索引擎', icon: '🌐', category: 'search' },
+    { id: 'se4', name: 'DuckDuckGo', url: 'https://duckduckgo.com', desc: '隐私搜索引擎', icon: '🦆', category: 'search' },
+    // 图片素材
+    { id: 'i1', name: 'Unsplash', url: 'https://unsplash.com', desc: '免费高清图片', icon: '📷', category: 'image' },
+    { id: 'i2', name: 'Pexels', url: 'https://www.pexels.com', desc: '免费图片视频素材', icon: '🖼️', category: 'image' },
+    { id: 'i3', name: 'Pixabay', url: 'https://pixabay.com', desc: '免费图片插画', icon: '🎭', category: 'image' },
+    { id: 'i4', name: 'iconfont', url: 'https://www.iconfont.cn', desc: '阿里巴巴图标库', icon: '🎯', category: 'image' },
+    { id: 'i5', name: 'Flaticon', url: 'https://www.flaticon.com', desc: '矢量图标库', icon: '📐', category: 'image' },
+    // 视频平台
+    { id: 'v1', name: '哔哩哔哩', url: 'https://www.bilibili.com', desc: '视频弹幕网站', icon: '📺', category: 'video' },
+    { id: 'v2', name: 'YouTube', url: 'https://www.youtube.com', desc: '全球视频平台', icon: '▶️', category: 'video' },
+    { id: 'v3', name: '优酷', url: 'https://www.youku.com', desc: '在线视频平台', icon: '🎬', category: 'video' },
+    { id: 'v4', name: '西瓜视频', url: 'https://www.ixigua.com', desc: '长视频平台', icon: '🍉', category: 'video' },
+    // 字体资源
+    { id: 'f1', name: '100font', url: 'https://www.100font.com', desc: '免费商用字体', icon: '🔤', category: 'font' },
+    { id: 'f2', name: 'Google Fonts', url: 'https://fonts.google.com', desc: '谷歌免费字体', icon: '🅶', category: 'font' },
+    { id: 'f3', name: '字体天下', url: 'https://www.fonts.net.cn', desc: '中英文字体下载', icon: '📝', category: 'font' },
+    { id: 'f4', name: '猫啃网', url: 'https://www.maoken.com', desc: '免费商用字体', icon: '🐱', category: 'font' },
+    // 配色方案
+    { id: 'co1', name: 'Coolors', url: 'https://coolors.co', desc: '配色方案生成器', icon: '🎨', category: 'color' },
+    { id: 'co2', name: 'Color Hunt', url: 'https://www.colorhunt.co', desc: '色卡灵感', icon: '🎯', category: 'color' },
+    { id: 'co3', name: '中国色', url: 'https://zhongguose.com', desc: '中国传统颜色', icon: '🏮', category: 'color' },
+    { id: 'co4', name: 'Adobe Color', url: 'https://color.adobe.com', desc: '在线调色工具', icon: '🌈', category: 'color' }
+  ],
+  favorites: [],
+  searchEngines: [
+    { id: 'local', name: '站内搜索', icon: '🔍', urlTemplate: '' },
+    { id: 'google', name: 'Google', icon: '🇬', urlTemplate: 'https://www.google.com/search?q={q}' },
+    { id: 'baidu', name: '百度', icon: '🅱️', urlTemplate: 'https://www.baidu.com/s?wd={q}' },
+    { id: 'bing', name: 'Bing', icon: '🌐', urlTemplate: 'https://www.bing.com/search?q={q}' },
+    { id: 'zhihu', name: '知乎', icon: '💡', urlTemplate: 'https://www.zhihu.com/search?type=content&q={q}' },
+    { id: 'bilibili', name: '哔哩哔哩', icon: '📺', urlTemplate: 'https://search.bilibili.com/all?keyword={q}' },
+    { id: 'github', name: 'GitHub', icon: '🐙', urlTemplate: 'https://github.com/search?q={q}' },
+    { id: 'douyin', name: '抖音', icon: '🎵', urlTemplate: 'https://www.douyin.com/search/{q}' },
+    { id: 'duckduckgo', name: 'DuckDuckGo', icon: '🦆', urlTemplate: 'https://duckduckgo.com/?q={q}' }
+  ]
+};
+
+let adminData = null;
+
+function loadAdminData() {
+  try {
+    const saved = localStorage.getItem('nav_data_v4');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      adminData = {
+        categories: (parsed.categories && parsed.categories.length > 0) ? parsed.categories : DEFAULT_DATA.categories,
+        sites: (parsed.sites && parsed.sites.length > 0) ? parsed.sites : DEFAULT_DATA.sites,
+        favorites: parsed.favorites || [],
+        searchEngines: (parsed.searchEngines && parsed.searchEngines.length > 0) ? parsed.searchEngines : DEFAULT_DATA.searchEngines
+      };
+    } else {
+      // 首次访问：使用含完整默认站点的DEFAULT_DATA并写入存储
+      adminData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      saveAdminData();
+    }
+  } catch(e) {
+    adminData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+  renderAll();
+}
+
+function saveAdminData() {
+  try {
+    localStorage.setItem('nav_data_v4', JSON.stringify(adminData));
+    // 同步收藏到独立key，与index.html保持一致
+    if (adminData.favorites) {
+      localStorage.setItem('nav_favorites_v4', JSON.stringify(adminData.favorites));
+    }
+  } catch(e) { console.error('Save error:', e); }
+}
+
+// ===================== RENDER =====================
+function renderAll() {
+  renderStats();
+  renderSitesTable();
+  renderCatsTable();
+  renderEnginesTable();
+}
+
+function renderStats() {
+  const catCount = adminData.categories.filter(c => c.id !== 'fav').length;
+  const siteCount = adminData.sites.length;
+  const favCount = adminData.favorites ? adminData.favorites.length : 0;
+  const engCount = adminData.searchEngines.length;
+
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card"><div class="stat-label">网站总数</div><div class="stat-value">${siteCount}</div></div>
+    <div class="stat-card"><div class="stat-label">分类数量</div><div class="stat-value">${catCount}</div></div>
+    <div class="stat-card"><div class="stat-label">收藏数量</div><div class="stat-value">${favCount}</div></div>
+    <div class="stat-card"><div class="stat-label">搜索引擎</div><div class="stat-value">${engCount}</div></div>
+  `;
+}
+
+function renderSitesTable(filter = '') {
+  const tbody = document.getElementById('sitesTable');
+  let sites = adminData.sites;
+  if (filter) {
+    const q = filter.toLowerCase();
+    sites = sites.filter(s => s.name.toLowerCase().includes(q) || (s.desc || '').toLowerCase().includes(q));
+  }
+
+  if (sites.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:40px;">暂无数据</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = sites.map(s => {
+    const cat = adminData.categories.find(c => c.id === s.category);
+    const catName = cat ? cat.name : s.category;
+    return `<tr>
+      <td><span class="table-icon">${s.icon || '🔗'}</span></td>
+      <td><strong>${escHtml(s.name)}</strong></td>
+      <td><span class="badge badge-blue">${escHtml(catName)}</span></td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><a href="${s.url}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:12px;">${escHtml(s.url)}</a></td>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-muted);font-size:12px;">${escHtml(s.desc || '')}</td>
+      <td><div class="table-actions">
+        <button class="btn btn-sm" onclick="editSite('${s.id}')">编辑</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteSite('${s.id}')">删除</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderCatsTable() {
+  const tbody = document.getElementById('catsTable');
+  const cats = adminData.categories.filter(c => c.id !== 'fav').sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  tbody.innerHTML = cats.map(c => {
+    const count = adminData.sites.filter(s => s.category === c.id).length;
+    return `<tr>
+      <td><span class="table-icon">${c.icon || '📁'}</span></td>
+      <td><strong>${escHtml(c.name)}</strong></td>
+      <td><code style="background:#f0f2f5;padding:2px 6px;border-radius:4px;font-size:12px;">${escHtml(c.id)}</code></td>
+      <td>${c.order || 0}</td>
+      <td><span class="badge badge-green">${count}</span></td>
+      <td><div class="table-actions">
+        <button class="btn btn-sm" onclick="editCat('${c.id}')">编辑</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteCat('${c.id}')">删除</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderEnginesTable() {
+  const tbody = document.getElementById('enginesTable');
+  tbody.innerHTML = adminData.searchEngines.map(e => {
+    return `<tr>
+      <td><span class="table-icon">${e.icon || '🔍'}</span></td>
+      <td><strong>${escHtml(e.name)}</strong></td>
+      <td><code style="background:#f0f2f5;padding:2px 6px;border-radius:4px;font-size:12px;">${escHtml(e.id)}</code></td>
+      <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--text-muted);">${escHtml(e.urlTemplate || '(站内搜索)')}</td>
+      <td><div class="table-actions">
+        <button class="btn btn-sm" onclick="editEng('${e.id}')">编辑</button>
+        ${e.id !== 'local' ? `<button class="btn btn-sm btn-danger" onclick="deleteEng('${e.id}')">删除</button>` : ''}
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ===================== SITE CRUD =====================
+function openSiteModal(site = null) {
+  document.getElementById('siteModalTitle').textContent = site ? '编辑网站' : '添加网站';
+  document.getElementById('siteEditId').value = site ? site.id : '';
+  document.getElementById('siteName').value = site ? site.name : '';
+  document.getElementById('siteUrl').value = site ? site.url : '';
+  document.getElementById('siteDesc').value = site ? (site.desc || '') : '';
+  document.getElementById('siteIcon').value = site ? (site.icon || '') : '';
+
+  // Fill category select
+  const sel = document.getElementById('siteCategory');
+  const cats = adminData.categories.filter(c => c.id !== 'fav').sort((a, b) => (a.order||0) - (b.order||0));
+  sel.innerHTML = cats.map(c => `<option value="${c.id}" ${site && site.category === c.id ? 'selected' : ''}>${c.icon} ${c.name}</option>`).join('');
+
+  document.getElementById('siteModal').classList.add('show');
+}
+
+function closeSiteModal() {
+  document.getElementById('siteModal').classList.remove('show');
+}
+
+function saveSite() {
+  const editId = document.getElementById('siteEditId').value;
+  const name = document.getElementById('siteName').value.trim();
+  const url = document.getElementById('siteUrl').value.trim();
+  const desc = document.getElementById('siteDesc').value.trim();
+  const icon = document.getElementById('siteIcon').value.trim();
+  const category = document.getElementById('siteCategory').value;
+
+  if (!name || !url) {
+    showToast('请填写网站名称和网址');
+    return;
+  }
+
+  if (editId) {
+    const site = adminData.sites.find(s => s.id === editId);
+    if (site) {
+      site.name = name;
+      site.url = url;
+      site.desc = desc;
+      site.icon = icon;
+      site.category = category;
+    }
+  } else {
+    adminData.sites.push({
+      id: 's_' + Date.now(),
+      name, url, desc, icon, category
+    });
+  }
+
+  saveAdminData();
+  renderAll();
+  closeSiteModal();
+  showToast(editId ? '网站已更新' : '网站已添加');
+}
+
+function editSite(id) {
+  const site = adminData.sites.find(s => s.id === id);
+  if (site) openSiteModal(site);
+}
+
+function deleteSite(id) {
+  if (!confirm('确定要删除这个网站吗？')) return;
+  adminData.sites = adminData.sites.filter(s => s.id !== id);
+  if (adminData.favorites) {
+    adminData.favorites = adminData.favorites.filter(f => f !== id);
+  }
+  saveAdminData();
+  renderAll();
+  showToast('网站已删除');
+}
+
+// ===================== CATEGORY CRUD =====================
+function openCatModal(cat = null) {
+  document.getElementById('catModalTitle').textContent = cat ? '编辑分类' : '添加分类';
+  document.getElementById('catEditId').value = cat ? cat.id : '';
+  document.getElementById('catName').value = cat ? cat.name : '';
+  document.getElementById('catId').value = cat ? cat.id : '';
+  document.getElementById('catIcon').value = cat ? (cat.icon || '') : '';
+  document.getElementById('catOrder').value = cat ? (cat.order || 0) : adminData.categories.length;
+
+  if (cat) document.getElementById('catId').readOnly = true;
+  else document.getElementById('catId').readOnly = false;
+
+  document.getElementById('catModal').classList.add('show');
+}
+
+function closeCatModal() {
+  document.getElementById('catModal').classList.remove('show');
+}
+
+function saveCat() {
+  const editId = document.getElementById('catEditId').value;
+  const name = document.getElementById('catName').value.trim();
+  const id = document.getElementById('catId').value.trim();
+  const icon = document.getElementById('catIcon').value.trim();
+  const order = parseInt(document.getElementById('catOrder').value) || 0;
+
+  if (!name || !id) {
+    showToast('请填写分类名称和ID');
+    return;
+  }
+
+  if (editId) {
+    const cat = adminData.categories.find(c => c.id === editId);
+    if (cat) {
+      cat.name = name;
+      cat.icon = icon;
+      cat.order = order;
+    }
+  } else {
+    if (adminData.categories.find(c => c.id === id)) {
+      showToast('分类ID已存在');
+      return;
+    }
+    adminData.categories.push({ id, name, icon, order });
+  }
+
+  saveAdminData();
+  renderAll();
+  closeCatModal();
+  showToast(editId ? '分类已更新' : '分类已添加');
+}
+
+function editCat(id) {
+  const cat = adminData.categories.find(c => c.id === id);
+  if (cat) openCatModal(cat);
+}
+
+function deleteCat(id) {
+  const count = adminData.sites.filter(s => s.category === id).length;
+  if (count > 0) {
+    if (!confirm(`该分类下有 ${count} 个网站，删除分类后这些网站将无法显示。确定要删除吗？`)) return;
+  } else {
+    if (!confirm('确定要删除这个分类吗？')) return;
+  }
+  adminData.categories = adminData.categories.filter(c => c.id !== id);
+  saveAdminData();
+  renderAll();
+  showToast('分类已删除');
+}
+
+// ===================== ENGINE CRUD =====================
+function openEngModal(eng = null) {
+  document.getElementById('engModalTitle').textContent = eng ? '编辑搜索引擎' : '添加搜索引擎';
+  document.getElementById('engEditId').value = eng ? eng.id : '';
+  document.getElementById('engName').value = eng ? eng.name : '';
+  document.getElementById('engId').value = eng ? eng.id : '';
+  document.getElementById('engIcon').value = eng ? (eng.icon || '') : '';
+  document.getElementById('engUrl').value = eng ? (eng.urlTemplate || '') : '';
+
+  if (eng) document.getElementById('engId').readOnly = true;
+  else document.getElementById('engId').readOnly = false;
+
+  document.getElementById('engModal').classList.add('show');
+}
+
+function closeEngModal() {
+  document.getElementById('engModal').classList.remove('show');
+}
+
+function saveEng() {
+  const editId = document.getElementById('engEditId').value;
+  const name = document.getElementById('engName').value.trim();
+  const id = document.getElementById('engId').value.trim();
+  const icon = document.getElementById('engIcon').value.trim();
+  const urlTemplate = document.getElementById('engUrl').value.trim();
+
+  if (!name || !id) {
+    showToast('请填写名称和ID');
+    return;
+  }
+
+  if (editId) {
+    const eng = adminData.searchEngines.find(e => e.id === editId);
+    if (eng) {
+      eng.name = name;
+      eng.icon = icon;
+      eng.urlTemplate = urlTemplate;
+    }
+  } else {
+    if (adminData.searchEngines.find(e => e.id === id)) {
+      showToast('ID已存在');
+      return;
+    }
+    adminData.searchEngines.push({ id, name, icon, urlTemplate });
+  }
+
+  saveAdminData();
+  renderAll();
+  closeEngModal();
+  showToast(editId ? '搜索引擎已更新' : '搜索引擎已添加');
+}
+
+function editEng(id) {
+  const eng = adminData.searchEngines.find(e => e.id === id);
+  if (eng) openEngModal(eng);
+}
+
+function deleteEng(id) {
+  if (!confirm('确定要删除这个搜索引擎吗？')) return;
+  adminData.searchEngines = adminData.searchEngines.filter(e => e.id !== id);
+  saveAdminData();
+  renderAll();
+  showToast('搜索引擎已删除');
+}
+
+// ===================== DATA MGMT =====================
+function exportData() {
+  const blob = new Blob([JSON.stringify(adminData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `nav_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('数据已导出');
+}
+
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.categories && data.sites) {
+        adminData = data;
+        saveAdminData();
+        renderAll();
+        showToast('数据导入成功');
+      } else {
+        showToast('文件格式不正确');
+      }
+    } catch(err) {
+      showToast('文件解析失败');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetData() {
+  if (!confirm('确定要重置所有数据吗？此操作不可撤销！')) return;
+  if (!confirm('再次确认：将清除所有自定义数据并恢复默认值！')) return;
+  adminData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  saveAdminData();
+  localStorage.removeItem('nav_favorites_v4');
+  renderAll();
+  showToast('数据已重置为默认值');
+}
+
+// ===================== HELPERS =====================
+function escHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===================== INIT =====================
+function init() {
+  // Check auth
+  if (isLoggedIn()) {
+    showAdmin();
+  } else {
+    showLogin();
+  }
+
+  // Login
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+    if (login(user, pass)) {
+      showAdmin();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+      setTimeout(() => document.getElementById('loginError').style.display = 'none', 3000);
+    }
+  });
+
+  document.getElementById('loginPass').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('loginBtn').click();
+  });
+
+  document.getElementById('loginUser').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('loginPass').focus();
+  });
+
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', logout);
+
+  // Tabs
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+    });
+  });
+
+  // Site
+  document.getElementById('addSiteBtn').addEventListener('click', () => openSiteModal());
+  document.getElementById('saveSiteBtn').addEventListener('click', saveSite);
+  document.getElementById('siteSearch').addEventListener('input', (e) => {
+    renderSitesTable(e.target.value);
+  });
+
+  // Category
+  document.getElementById('addCatBtn').addEventListener('click', () => openCatModal());
+  document.getElementById('saveCatBtn').addEventListener('click', saveCat);
+
+  // Engine
+  document.getElementById('addEngBtn').addEventListener('click', () => openEngModal());
+  document.getElementById('saveEngBtn').addEventListener('click', saveEng);
+
+  // Data
+  document.getElementById('exportBtn').addEventListener('click', exportData);
+  document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
+  document.getElementById('importFile').addEventListener('change', (e) => {
+    if (e.target.files[0]) importData(e.target.files[0]);
+    e.target.value = '';
+  });
+  document.getElementById('resetBtn').addEventListener('click', resetData);
+
+  // Change password
+  document.getElementById('changePassBtn').addEventListener('click', () => {
+    const newPass = document.getElementById('newPassInput').value.trim();
+    const confirmPass = document.getElementById('confirmPassInput').value.trim();
+    if (!newPass) { showToast('请输入新密码'); return; }
+    if (newPass.length < 4) { showToast('密码至少4位'); return; }
+    if (newPass !== confirmPass) { showToast('两次密码不一致'); return; }
+    const creds = getCredentials();
+    setCredentials(creds.user, newPass);
+    document.getElementById('newPassInput').value = '';
+    document.getElementById('confirmPassInput').value = '';
+    showToast('密码修改成功');
+  });
+
+  // Close modals on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.remove('show');
+    });
+  });
+}
+
+init();
+</script>
+</body>
+</html>
