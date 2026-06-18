@@ -31,6 +31,7 @@
 <div class="modal" id="categoryModal"><form class="modal-card" id="categoryForm"><div class="modal-head"><h2 id="categoryModalTitle">新增分类</h2><button class="btn small" type="button" data-close="categoryModal">关闭</button></div><input id="categoryOriginalId" type="hidden"><div class="field"><label>分类名称</label><input class="input" id="categoryName" required></div><div class="field"><label>分类 ID</label><input class="input" id="categoryId" pattern="[a-z0-9_-]+" required></div><div class="field"><label>图标或 Emoji</label><input class="input" id="categoryIcon" maxlength="8"></div><div class="modal-actions"><button class="btn" type="button" data-close="categoryModal">取消</button><button class="btn primary">保存</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script src="data.js"></script>
+<script src="merge-fix.js"></script>
 <script>
 (function(){
 'use strict';
