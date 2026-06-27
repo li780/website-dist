@@ -115,4 +115,67 @@
   store.load = load;
   store.save = save;
   store.reset = reset;
+
+  function installCategoryGrouping() {
+    if (!global.document) return;
+    const style = document.createElement('style');
+    style.textContent = '.category-group{grid-column:1/-1;margin:4px 0 18px}.category-head{display:flex;align-items:center;gap:8px;margin:0 0 10px;color:var(--text)}.category-head .category-icon{width:28px;height:28px;border-radius:6px;background:var(--surface2);display:grid;place-items:center}.category-head h2{font-size:16px;margin:0;letter-spacing:0}.category-head .category-count{color:var(--muted);font-size:12px}.category-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(224px,1fr));gap:10px}@media(max-width:760px){.category-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}.category-group{margin-bottom:16px}}@media(max-width:420px){.category-grid{grid-template-columns:1fr}}';
+    document.head.appendChild(style);
+
+    let grouping = false;
+    const byHref = site => normalizeUrl(site.finalUrl || site.url);
+    const html = value => {
+      const node = document.createElement('div');
+      node.textContent = String(value || '');
+      return node.innerHTML;
+    };
+
+    function shouldGroup() {
+      const active = document.querySelector('.nav-btn.active');
+      const activeId = active ? active.dataset.id : '';
+      const title = document.getElementById('headerLabel')?.textContent || '';
+      const searchValue = document.getElementById('searchInput')?.value.trim() || '';
+      return !searchValue && (activeId === 'all' || (!activeId && title === '全部网站'));
+    }
+
+    function applyCategoryGroups() {
+      if (grouping || !shouldGroup()) return;
+      const grid = document.getElementById('siteGrid');
+      if (!grid || grid.querySelector('.category-group')) return;
+      const cards = Array.from(grid.querySelectorAll(':scope > .site-card'));
+      if (!cards.length) return;
+      const data = load();
+      const siteByUrl = new Map(data.sites.map(site => [byHref(site), site]));
+      const cardsByCategory = new Map();
+
+      cards.forEach(card => {
+        const site = siteByUrl.get(normalizeUrl(card.getAttribute('href')));
+        if (!site) return;
+        const items = cardsByCategory.get(site.category) || [];
+        items.push(card);
+        cardsByCategory.set(site.category, items);
+      });
+      if (!cardsByCategory.size) return;
+
+      grouping = true;
+      grid.textContent = '';
+      data.categories.slice().sort((a, b) => (a.order || 0) - (b.order || 0)).forEach(category => {
+        const groupCards = cardsByCategory.get(category.id);
+        if (!groupCards || !groupCards.length) return;
+        const section = document.createElement('section');
+        section.className = 'category-group';
+        section.innerHTML = '<div class="category-head"><span class="category-icon">' + html(category.icon) + '</span><h2>' + html(category.name) + '</h2><span class="category-count">' + groupCards.length + ' 个网站</span></div><div class="category-grid"></div>';
+        const groupGrid = section.querySelector('.category-grid');
+        groupCards.forEach(card => groupGrid.appendChild(card));
+        grid.appendChild(section);
+      });
+      grouping = false;
+    }
+
+    const observer = new MutationObserver(() => setTimeout(applyCategoryGroups, 0));
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    setTimeout(applyCategoryGroups, 0);
+  }
+
+  installCategoryGrouping();
 })(window);
