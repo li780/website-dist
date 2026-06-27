@@ -4,19 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>我的工作台</title>
-<style>
-:root{--bg:#f4f6f8;--surface:#fff;--surface2:#eef1f4;--text:#18202a;--muted:#687383;--line:#dce1e7;--accent:#176b57;--accent2:#125443;--danger:#b42318;--warning:#9a6700;--shadow:0 3px 14px rgba(24,32,42,.08)}
-[data-theme="dark"]{--bg:#111417;--surface:#1b2025;--surface2:#252b31;--text:#eef1f4;--muted:#a7b0bb;--line:#343b43;--accent:#49b99a;--accent2:#69c8ad;--danger:#ff8a80;--warning:#f3c969;--shadow:0 4px 18px rgba(0,0,0,.24)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px}button,input{font:inherit;color:inherit}button{cursor:pointer}.app{min-height:100vh;display:grid;grid-template-columns:232px minmax(0,1fr)}
-.sidebar{position:sticky;top:0;height:100vh;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}.brand{height:68px;padding:0 18px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line)}.brand-mark{width:34px;height:34px;border-radius:7px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:800}.brand strong{display:block;font-size:16px}.brand small{color:var(--muted)}
-.nav-scroll{padding:10px;overflow:auto}.nav-btn{width:100%;height:38px;border:0;background:transparent;border-radius:6px;display:flex;align-items:center;gap:10px;padding:0 10px;text-align:left}.nav-btn:hover{background:var(--surface2)}.nav-btn.active{background:var(--accent);color:#fff}.nav-btn .count{margin-left:auto;font-size:12px;opacity:.72}.sidebar-foot{margin-top:auto;padding:12px;border-top:1px solid var(--line)}.admin-link{display:block;color:var(--muted);text-decoration:none;padding:8px 10px}.admin-link:hover{color:var(--accent)}
-.main{min-width:0}.topbar{height:68px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px;gap:12px;position:sticky;top:0;z-index:5}.menu-btn{display:none}.clock{margin-left:auto;text-align:right}.clock-time{font-size:20px;font-weight:750;font-variant-numeric:tabular-nums}.clock-date{color:var(--muted);font-size:12px;margin-top:2px}.icon-btn{width:36px;height:36px;border:1px solid var(--line);border-radius:6px;background:var(--surface);display:grid;place-items:center}.icon-btn:hover{background:var(--surface2)}
-.content{padding:24px;max-width:1500px;margin:0 auto}.search-panel{display:flex;gap:8px;max-width:760px}.engine{height:44px;border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:0 10px}.search-wrap{position:relative;flex:1}.search-wrap input{width:100%;height:44px;border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:0 48px 0 14px;outline:none}.search-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)}.search-go{position:absolute;right:4px;top:4px;width:36px;height:36px;border:0;border-radius:5px;background:var(--accent);color:#fff}
-.summary{display:flex;align-items:end;gap:12px;margin:24px 0 14px}.summary h1{font-size:22px;margin:0;letter-spacing:0}.summary p{margin:0;color:var(--muted)}.stats{margin-left:auto;display:flex;gap:8px}.stat{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px;color:var(--muted)}.stat b{color:var(--text);margin-right:4px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(224px,1fr));gap:10px}.site-card{position:relative;min-height:88px;background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:14px 42px 12px 14px;text-decoration:none;color:inherit;display:grid;grid-template-columns:38px 1fr;gap:11px;align-items:center;box-shadow:var(--shadow);transition:transform .15s,border-color .15s}.site-card:hover{transform:translateY(-2px);border-color:var(--accent)}.site-icon{width:38px;height:38px;border-radius:7px;background:var(--surface2);display:grid;place-items:center;font-size:20px;font-weight:700}.site-name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.site-desc{color:var(--muted);font-size:12px;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fav-btn{position:absolute;right:7px;top:7px;width:30px;height:30px;border:0;background:transparent;color:var(--muted);font-size:18px}.fav-btn.active{color:#e2a400}.status{position:absolute;right:10px;bottom:7px;font-size:10px;color:var(--warning)}.empty{grid-column:1/-1;padding:60px 20px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:7px}.backdrop{display:none}
-@media(max-width:760px){.app{display:block}.sidebar{position:fixed;left:-248px;width:232px;z-index:20;transition:left .2s}.sidebar.open{left:0}.backdrop.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:15}.menu-btn{display:grid}.topbar{padding:0 14px;height:60px}.clock-time{font-size:16px}.content{padding:16px}.search-panel{display:grid;grid-template-columns:112px 1fr}.summary{align-items:flex-start;flex-wrap:wrap;margin-top:20px}.stats{width:100%;margin-left:0}.grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}.site-card{min-height:82px;padding-left:11px;grid-template-columns:34px 1fr}.site-icon{width:34px;height:34px}.clock-date{max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
-@media(max-width:420px){.grid{grid-template-columns:1fr}.clock-date{display:none}.search-panel{grid-template-columns:96px 1fr}}
-</style>
+<link rel="stylesheet" href="style.css?v=20260627">
 </head>
 <body>
 <div class="app">
@@ -44,53 +32,7 @@
   </main>
 </div>
 <script src="data.js"></script>
-<script src="merge-fix.js"></script>
-<script>
-(function(){
-  'use strict';
-  let data=NavStore.load(),current='all',query='',timer;
-  const $=id=>document.getElementById(id);
-  const categoryMap=()=>new Map(data.categories.map(c=>[c.id,c]));
-  function visibleSites(){return data.sites.filter(s=>s.visibility!==false&&s.status!=='dead')}
-  function renderNav(){
-    const counts=new Map(); visibleSites().forEach(s=>counts.set(s.category,(counts.get(s.category)||0)+1));
-    const items=[{id:'all',name:'全部网站',icon:'▦',count:visibleSites().length}];
-    if(data.settings.showFavorites)items.push({id:'fav',name:'我的收藏',icon:'★',count:data.favorites.length});
-    data.categories.slice().sort((a,b)=>a.order-b.order).forEach(c=>items.push({...c,count:counts.get(c.id)||0}));
-    $('categoryNav').innerHTML=items.map(x=>'<button class="nav-btn '+(current===x.id?'active':'')+'" data-id="'+x.id+'"><span>'+x.icon+'</span><span>'+escapeHtml(x.name)+'</span><span class="count">'+x.count+'</span></button>').join('');
-    $('categoryNav').querySelectorAll('button').forEach(b=>b.onclick=()=>{current=b.dataset.id;query='';$('searchInput').value='';render();closeMenu()});
-  }
-  function render(){
-    data=NavStore.load(); const cats=categoryMap(); let sites=visibleSites();
-    if(current==='fav')sites=sites.filter(s=>data.favorites.includes(s.id)); else if(current!=='all')sites=sites.filter(s=>s.category===current);
-    if(query){const q=query.toLowerCase();sites=sites.filter(s=>(s.name+' '+s.desc+' '+s.url).toLowerCase().includes(q))}
-    const title=query?'搜索结果':current==='all'?'全部网站':current==='fav'?'我的收藏':(cats.get(current)?.name||'全部网站');
-    $('headerLabel').textContent=title;$('viewTitle').textContent=title;
-    $('viewSubtitle').textContent=query?'找到 '+sites.length+' 个匹配网站':'共 '+sites.length+' 个可用入口';
-    $('siteGrid').innerHTML=sites.length?sites.map(siteCard).join(''):'<div class="empty">没有符合条件的网站</div>';
-    $('siteGrid').querySelectorAll('.fav-btn').forEach(btn=>btn.onclick=e=>{e.preventDefault();e.stopPropagation();toggleFavorite(btn.dataset.id)});
-    $('searchPanel').style.display=data.settings.showSearch?'flex':'none';
-    $('themeBtn').style.display=data.settings.showThemeToggle?'grid':'none';
-    $('clock').style.display=(data.settings.showTime||data.settings.showDate)?'block':'none';
-    $('stats').style.display=data.settings.showStats?'flex':'none';
-    $('stats').innerHTML='<span class="stat"><b>'+visibleSites().length+'</b>网站</span><span class="stat"><b>'+data.categories.length+'</b>分类</span>';
-    renderNav();
-  }
-  function siteCard(s){const fav=data.favorites.includes(s.id),desc=data.settings.showDescriptions?'<div class="site-desc">'+escapeHtml(s.desc||s.url)+'</div>':'';const status=s.status==='review'?'<span class="status">待复核</span>':s.status==='redirect'?'<span class="status">已重定向</span>':'';return '<a class="site-card" href="'+escapeAttr(s.finalUrl||s.url)+'" target="_blank" rel="noopener"><div class="site-icon">'+escapeHtml(s.icon||domainInitial(s.url))+'</div><div><div class="site-name">'+escapeHtml(s.name)+'</div>'+desc+'</div><button class="fav-btn '+(fav?'active':'')+'" data-id="'+s.id+'" title="'+(fav?'取消收藏':'加入收藏')+'">★</button>'+status+'</a>'}
-  function toggleFavorite(id){const set=new Set(data.favorites);set.has(id)?set.delete(id):set.add(id);data.favorites=[...set];NavStore.save(data);render()}
-  function doSearch(){const value=$('searchInput').value.trim(),engine=$('engineSelect').value;if(!value)return;if(engine==='local'){query=value;current='all';render()}else{const item=data.searchEngines.find(e=>e.id===engine);if(item)window.open(item.urlTemplate.replace('{q}',encodeURIComponent(value)),'_blank','noopener')}}
-  function renderEngines(){$('engineSelect').innerHTML=data.searchEngines.map(e=>'<option value="'+e.id+'">'+escapeHtml(e.icon+' '+e.name)+'</option>').join('')}
-  function updateClock(){const now=new Date(),timeOptions={hour:'2-digit',minute:'2-digit',hour12:false};if(data.settings.showSeconds)timeOptions.second='2-digit';$('clockTime').textContent=data.settings.showTime?now.toLocaleTimeString('zh-CN',timeOptions):'';$('clockDate').textContent=data.settings.showDate?now.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'}):''}
-  function closeMenu(){$('sidebar').classList.remove('open');$('backdrop').classList.remove('open')}
-  function domainInitial(url){try{return new URL(url).hostname.replace(/^www\./,'')[0].toUpperCase()}catch{return '?'}}
-  function escapeHtml(v){const d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML}
-  function escapeAttr(v){return escapeHtml(v).replace(/"/g,'&quot;')}
-  $('searchBtn').onclick=doSearch;$('searchInput').onkeydown=e=>{if(e.key==='Enter')doSearch()};$('searchInput').oninput=e=>{if($('engineSelect').value==='local'){query=e.target.value.trim();current='all';render()}};
-  $('menuBtn').onclick=()=>{$('sidebar').classList.add('open');$('backdrop').classList.add('open')};$('backdrop').onclick=closeMenu;
-  $('themeBtn').onclick=()=>{const dark=document.documentElement.dataset.theme==='dark';document.documentElement.dataset.theme=dark?'light':'dark';localStorage.setItem('nav_theme',dark?'light':'dark')};
-  window.addEventListener('storage',e=>{if(e.key===NavStore.STORAGE_KEY){data=NavStore.load();renderEngines();render()}});
-  document.documentElement.dataset.theme=localStorage.getItem('nav_theme')||'light';renderEngines();render();updateClock();timer=setInterval(updateClock,1000);
-})();
-</script>
+<script src="merge-fix.js?v=20260627"></script>
+<script src="app.js?v=20260627"></script>
 </body>
 </html>
